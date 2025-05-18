@@ -82,7 +82,7 @@ export default function AnalyzePage() {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://example.com"
-              className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-grow px-4 py-2 border border-black-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               type="submit"
@@ -154,8 +154,8 @@ export default function AnalyzePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">🔍 Summary</h2>
-                  <div className="bg-blue-50 p-4 rounded-lg">
+                  <h2 className="text-xl font-semibold mb-2 text-black-700 ">🔍 Summary</h2>
+                  <div className="bg-blue-50 p-4 rounded-lg text-black-500">
                     {results.summary}
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function AnalyzePage() {
                         </span>
                       </div>
                     </div>
-                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+                    <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-black-200">
                       <div style={{ width: `${results.risk_score * 10}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap justify-center bg-red-500">
                         <span className="text-xs font-medium text-red-100 px-1">{results.risk_score}/10</span>
                       </div>
@@ -234,7 +234,7 @@ export default function AnalyzePage() {
                           ))}
                         </ul>
                       </li>
-                      <li>
+                      <li className="text-black-500">
                         Minified or Encoded Scripts:
                         <span className={results.script_analysis.minified_or_encoded ? 'text-red-600 ml-1' : 'text-green-600 ml-1'}>
                           {results.script_analysis.minified_or_encoded ? 'Detected' : 'None Detected'}

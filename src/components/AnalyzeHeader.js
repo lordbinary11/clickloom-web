@@ -4,7 +4,7 @@ export default function AnalyzeHeader() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
       <div className="text-center md:text-left">
-        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-2">Website Risk Analysis</h1>
+        <h1 className="text-3xl font-bold text-white-900 sm:text-4xl mb-2">Website Risk Analysis</h1>
         <p className="text-lg text-gray-600">Enter a URL to analyze for potential security risks</p>
       </div>
       <div className="h-[200px] md:h-[250px] w-full flex items-center justify-center">
