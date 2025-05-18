@@ -1,3 +1,5 @@
+'use client';
+
 export default function AboutPage() {
   return (
     <div className="bg-white">
@@ -18,7 +20,7 @@ export default function AboutPage() {
       {/* Content section */}
       <div className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
         <div className="mx-auto max-w-3xl">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">Our Story</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-black-900 mb-6">Our Story</h2>
           
           <div className="prose prose-lg prose-blue mx-auto">
             <p>
@@ -50,7 +52,7 @@ export default function AboutPage() {
               <li><strong>Visual Elements:</strong> We identify design patterns commonly used to impersonate legitimate websites.</li>
             </ul>
             
-            <h3 className="text-xl font-bold tracking-tight text-gray-900 mt-8 mb-4">Our Team</h3>
+            <h3 className="text-xl font-bold tracking-tight text-black-900 mt-8 mb-4">Our Team</h3>
             
             <p>
               Clickloom.io was founded by a team of cybersecurity experts, data scientists, and web developers with a shared passion for making the internet safer. Our diverse backgrounds and expertise allow us to approach the problem of web security from multiple angles.
@@ -60,7 +62,7 @@ export default function AboutPage() {
               We're constantly working to improve our technology and expand our capabilities to stay ahead of emerging threats. Our goal is to provide the most accurate and helpful risk assessments possible, empowering users to make informed decisions about the websites they visit.
             </p>
             
-            <h3 className="text-xl font-bold tracking-tight text-gray-900 mt-8 mb-4">Our Vision</h3>
+            <h3 className="text-xl font-bold tracking-tight text-white-900 mt-8 mb-4">Our Vision</h3>
             
             <p>
               We envision a future where everyone has access to tools that help them navigate the web safely. We believe that by making advanced security analysis accessible to everyday users, we can help create a safer online environment for everyone.
