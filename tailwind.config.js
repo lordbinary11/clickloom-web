@@ -27,7 +27,13 @@ module.exports = {
           950: '#082f49',
         },
       },
+      animation: {
+        'float': 'float 3s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite',
+        'slow-spin': 'rotate 8s linear infinite',
+      },
     },
   },
   plugins: [],
 }
+

@@ -46,3 +46,32 @@ h1, h2, h3 {
 code, pre {
   font-family: var(--font-mono), monospace;
 }
+
+/* Custom animations for cybersecurity shield */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px 10px rgba(59, 130, 246, 0.3); }
+  50% { box-shadow: 0 0 30px 15px rgba(59, 130, 246, 0.5); }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-slow-spin {
+  animation: rotate 8s linear infinite;
+}
+
