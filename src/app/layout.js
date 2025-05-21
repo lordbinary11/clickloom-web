@@ -32,6 +32,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://accounts.google.com/gsi/client" async></script>
+      </head>
       <body
         className={`${inter.variable} ${robotoMono.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col`}
       >

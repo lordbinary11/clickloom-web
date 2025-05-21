@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,7 +12,28 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const supabase = createClientComponentClient();
+
+  
+    useEffect(() => {
+      setMounted(true);
+  
+      // Expose callback globally
+      window.handleGoogleLogin = async (response) => {
+        const { data, error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.credential,
+        });
+  
+        if (error) {
+          setError(error.message);
+        } else {
+          router.push('/dashboard');
+          router.refresh();
+        }
+      };
+    }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,6 +58,11 @@ export default function LoginPage() {
   };
 
   return (
+    <>
+    <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+      />
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
@@ -102,8 +129,34 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
+          <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500 mb-2">Or continue with</p>
+
+              {mounted && (
+                <>
+                  <div
+                    id="g_id_onload"
+                    data-client_id={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
+                    data-context="signup"
+                    data-ux_mode="popup"
+                    data-callback="handleGoogleLogin"
+                    data-auto_prompt="false"
+                  ></div>
+
+                  <div
+                    className="g_id_signin"
+                    data-type="standard"
+                    data-shape="pill"
+                    data-theme="outline"
+                    data-text="signin_with"
+                    data-size="large"
+                    data-logo_alignment="left"
+                  ></div>
+                </>
+              )}
+            </div>
         </div>
       </div>
     </div>
-  );
+  </>);
 }
