@@ -32,6 +32,37 @@ export default function SignUpPage() {
         router.refresh();
       }
     };
+
+    const initializeGoogle = () => {
+      if (window.google && window.google.accounts) {
+        window.google.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          callback: window.handleGoogleLogin,
+          ux_mode: 'popup',
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-signup-button'),
+          {
+            type: 'standard',
+            shape: 'pill',
+            theme: 'outline',
+            text: 'signup_with',
+            size: 'large',
+            logo_alignment: 'left',
+          }
+        );
+      }
+    };
+
+    const interval = setInterval(() => {
+      if (window.google && document.getElementById('google-signup-button')) {
+        clearInterval(interval);
+        initializeGoogle();
+      }
+    }, 300);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleSignUp = async (e) => {
@@ -140,29 +171,7 @@ export default function SignUpPage() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500 mb-2">Or continue with</p>
-
-              {mounted && (
-                <>
-                  <div
-                    id="g_id_onload"
-                    data-client_id={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-                    data-context="signup"
-                    data-ux_mode="popup"
-                    data-callback="handleGoogleLogin"
-                    data-auto_prompt="false"
-                  ></div>
-
-                  <div
-                    className="g_id_signin"
-                    data-type="standard"
-                    data-shape="pill"
-                    data-theme="outline"
-                    data-text="signin_with"
-                    data-size="large"
-                    data-logo_alignment="left"
-                  ></div>
-                </>
-              )}
+              {mounted && <div id="google-signup-button" className="flex justify-center" />}
             </div>
           </div>
         </div>
@@ -170,5 +179,3 @@ export default function SignUpPage() {
     </>
   );
 }
-// Note: Replace 'YOUR_GOOGLE_CLIENT_ID' with your actual Google Client ID.
-// Make sure to handle the Google login callback in your Supabase settings.
