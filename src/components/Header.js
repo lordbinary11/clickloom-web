@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function Header() {
@@ -11,6 +11,7 @@ export default function Header() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const pathname = usePathname();
   const supabase = createClientComponentClient();
+  const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
@@ -34,6 +35,8 @@ export default function Header() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    router.push('/');
+
   };
 
   const isActive = (path) => {
