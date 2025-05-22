@@ -15,8 +15,35 @@ export default function Header() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      try {
+        // First check if there's a session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error('Session error in Header:', sessionError);
+          setUser(null);
+          return;
+        }
+
+        if (!session) {
+          setUser(null);
+          return;
+        }
+
+        // If we have a session, get the user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+        if (userError) {
+          console.error('User error in Header:', userError);
+          setUser(null);
+          return;
+        }
+
+        setUser(user);
+      } catch (error) {
+        console.error('Unexpected auth error in Header:', error);
+        setUser(null);
+      }
     };
 
     getUser();
@@ -49,8 +76,8 @@ export default function Header() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-2xl font-bold text-blue-600 font-serif"
               >
                 Clickloom.io
@@ -76,6 +103,11 @@ export default function Header() {
                 }`}
               >
                 Analyze Website
+                {!user && (
+                  <svg className="ml-1 h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </Link>
               <Link
                 href="/about"
@@ -106,6 +138,11 @@ export default function Header() {
                 }`}
               >
                 Documentation
+                {!user && (
+                  <svg className="ml-1 h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                )}
               </Link>
               <Link
                 href="/contact"
@@ -205,13 +242,18 @@ export default function Header() {
             </Link>
             <Link
               href="/analyze"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+              className={`flex items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
                 isActive('/analyze')
                   ? 'bg-blue-50 border-blue-500 text-blue-700'
                   : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
               }`}
             >
               Analyze Website
+              {!user && (
+                <svg className="ml-1 h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+              )}
             </Link>
             <Link
               href="/about"
@@ -235,13 +277,18 @@ export default function Header() {
             </Link>
             <Link
               href="/docs"
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+              className={`flex items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
                 isActive('/docs')
                   ? 'bg-blue-50 border-blue-500 text-blue-700'
                   : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
               }`}
             >
               Documentation
+              {!user && (
+                <svg className="ml-1 h-3 w-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+              )}
             </Link>
             <Link
               href="/contact"

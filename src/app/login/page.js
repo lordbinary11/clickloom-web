@@ -72,15 +72,26 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Provide more user-friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Please check your email and click the confirmation link before signing in.');
+        } else {
+          throw error;
+        }
+      }
 
-      router.push('/dashboard');
-      router.refresh();
+      if (data?.session) {
+        router.push('/dashboard');
+        router.refresh();
+      }
     } catch (error) {
       setError(error.message);
     } finally {

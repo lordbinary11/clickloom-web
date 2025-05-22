@@ -13,13 +13,41 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      try {
+        // First check if there's a session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error('Session error in Dashboard:', sessionError);
+          router.push('/login');
+          return;
+        }
+
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+
+        // If we have a session, get the user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+        if (userError) {
+          console.error('User error in Dashboard:', userError);
+          router.push('/login');
+          return;
+        }
+
+        if (!user) {
+          router.push('/login');
+          return;
+        }
+
+        setUser(user);
+        fetchAnalyses(user.id);
+      } catch (error) {
+        console.error('Unexpected auth error in Dashboard:', error);
         router.push('/login');
-        return;
       }
-      setUser(user);
-      fetchAnalyses(user.id);
     };
 
     getUser();

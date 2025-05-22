@@ -10,14 +10,26 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleAuth = async () => {
-      // This will parse the access token from the URL
-      const { error } = await supabase.auth.getSession()
+      try {
+        // Handle the auth callback from email confirmation
+        const { data, error } = await supabase.auth.getSession()
 
-      if (!error) {
-        router.push('/dashboard')
-      } else {
-        console.error(error)
-        router.push('/login')
+        if (error) {
+          console.error('Auth callback error:', error)
+          router.push('/login?error=auth_callback_failed')
+          return
+        }
+
+        if (data?.session) {
+          // User is successfully authenticated
+          router.push('/dashboard')
+        } else {
+          // No session found, redirect to login
+          router.push('/login')
+        }
+      } catch (error) {
+        console.error('Unexpected error in auth callback:', error)
+        router.push('/login?error=unexpected_error')
       }
     }
 

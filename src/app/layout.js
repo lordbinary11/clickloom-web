@@ -2,6 +2,7 @@ import { Inter, Roboto_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Primary font - Inter (Sans-serif)
 const inter = Inter({
@@ -38,11 +39,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.variable} ${robotoMono.variable} ${playfair.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
-        <Header />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <ErrorBoundary>
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </ErrorBoundary>
       </body>
     </html>
   );

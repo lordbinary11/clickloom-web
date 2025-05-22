@@ -12,6 +12,7 @@ export default function SignUpPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [message, setMessage] = useState(null);
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -69,9 +70,10 @@ export default function SignUpPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setMessage(null);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -81,8 +83,14 @@ export default function SignUpPage() {
 
       if (error) throw error;
 
-      router.push('/dashboard');
-      router.refresh();
+      // Check if user needs to confirm email
+      if (data?.user && !data?.session) {
+        setMessage('Please check your email and click the confirmation link to complete your registration.');
+      } else if (data?.session) {
+        // User is automatically logged in (email confirmation disabled)
+        router.push('/dashboard');
+        router.refresh();
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -119,6 +127,12 @@ export default function SignUpPage() {
               {error && (
                 <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                   {error}
+                </div>
+              )}
+
+              {message && (
+                <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                  {message}
                 </div>
               )}
 

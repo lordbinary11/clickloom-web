@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import AnalyzeHeader from '@/components/AnalyzeHeader';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function AnalyzePage() {
   const [url, setUrl] = useState('');
@@ -9,8 +11,72 @@ export default function AnalyzePage() {
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        // First check if there's a session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error('Session error in Analyze:', sessionError);
+          setUser(null);
+          return;
+        }
+
+        if (!session) {
+          setUser(null);
+          return;
+        }
+
+        // If we have a session, get the user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+        if (userError) {
+          console.error('User error in Analyze:', userError);
+          setUser(null);
+          return;
+        }
+
+        setUser(user);
+      } catch (error) {
+        console.error('Unexpected auth error in Analyze:', error);
+        setUser(null);
+      }
+    };
+    getUser();
+  }, []);
 
   const isValidUrl = url.startsWith('http://') || url.startsWith('https://');
+
+  const saveAnalysisToDatabase = async (analysisData) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('website_analyses')
+        .insert([
+          {
+            user_id: user.id,
+            url: url,
+            verdict: analysisData.verdict,
+            risk_score: analysisData.risk_score,
+            summary: analysisData.summary,
+            recommendations: analysisData.recommendations,
+          }
+        ]);
+
+      if (error) {
+        console.error('Error saving analysis:', error);
+      } else {
+        console.log('Analysis saved successfully');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving analysis:', error);
+    }
+  };
 
   const handleAnalyze = async (e) => {
     e.preventDefault();
@@ -28,7 +94,7 @@ export default function AnalyzePage() {
         setProgress(50);
 
         // Simulate API response
-        setTimeout(() => {
+        setTimeout(async () => {
           setProgress(100);
 
           // Mock data similar to your Streamlit app
@@ -60,6 +126,10 @@ export default function AnalyzePage() {
           };
 
           setResults(mockResults);
+
+          // Save analysis to database
+          await saveAnalysisToDatabase(mockResults);
+
           setIsAnalyzing(false);
         }, 1500);
       }, 1500);
@@ -71,8 +141,9 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
+    <AuthGuard>
+      <div className="min-h-screen bg-white text-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
         <AnalyzeHeader />
 
         <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 relative z-10">
@@ -186,7 +257,7 @@ export default function AnalyzePage() {
                         ? 'bg-red-100 border border-red-200'
                         : 'bg-green-100 border border-green-200'
                     }`}>
-                      <strong className="text-black">Phishing Indicators:</strong> 
+                      <strong className="text-black">Phishing Indicators:</strong>
                       <span className={results.page_text_findings.phishing_indicators ? 'text-red-800' : 'text-green-800'}>
                         {results.page_text_findings.phishing_indicators ? 'Detected' : 'None Detected'}
                       </span>
@@ -321,8 +392,6 @@ export default function AnalyzePage() {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 }
-
-
-
