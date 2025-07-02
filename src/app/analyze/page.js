@@ -85,55 +85,19 @@ export default function AnalyzePage() {
     setError(null);
 
     try {
-      // Simulate progress
       setProgress(25);
-
-      // In a real implementation, you would call your API here
-      // For now, we'll simulate the API call with a timeout
-      setTimeout(() => {
-        setProgress(50);
-
-        // Simulate API response
-        setTimeout(async () => {
-          setProgress(100);
-
-          // Mock data similar to your Streamlit app
-          const mockResults = {
-            verdict: "Suspicious",
-            risk_score: 6.8,
-            summary: "This website appears to be a phishing attempt targeting users of a popular banking service. It contains suspicious elements designed to collect sensitive information.",
-            recommendations: "Do not enter any personal information on this site. If you've already shared information, contact your bank immediately and change your passwords.",
-            page_text_findings: {
-              suspicious_phrases: [
-                "Verify your account immediately",
-                "Enter your security code",
-                "Confirm your identity"
-              ],
-              phishing_indicators: true
-            },
-            script_analysis: {
-              total_scripts: 12,
-              external_scripts: 8,
-              suspicious_domains: ["analytics-track.com", "data-collector.net"],
-              minified_or_encoded: true
-            },
-            link_analysis: {
-              total_links: 24,
-              external_links: 15,
-              redirect_services_used: ["bit.ly", "tinyurl.com"],
-              phishing_like_links: ["secure-banklogin.com", "account-verify-now.net"]
-            }
-          };
-
-          setResults(mockResults);
-
-          // Save analysis to database
-          await saveAnalysisToDatabase(mockResults);
-
-          setIsAnalyzing(false);
-        }, 1500);
-      }, 1500);
-
+      // Real API call (now proxied to avoid CORS)
+      const apiUrl = `/api/analyze?link=${encodeURIComponent(url)}`;
+      setProgress(50);
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to analyze the website.');
+      }
+      const apiResults = await response.json();
+      setProgress(100);
+      setResults(apiResults);
+      await saveAnalysisToDatabase(apiResults);
+      setIsAnalyzing(false);
     } catch (err) {
       setError("An error occurred while analyzing the website. Please try again.");
       setIsAnalyzing(false);
