@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Script from 'next/script';
+// import Script from 'next/script';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -20,19 +20,19 @@ export default function SignUpPage() {
     setMounted(true);
 
     // Expose callback globally
-    window.handleGoogleLogin = async (response) => {
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: response.credential,
-      });
+    // window.handleGoogleLogin = async (response) => {
+    //   const { data, error } = await supabase.auth.signInWithIdToken({
+    //     provider: 'google',
+    //     token: response.credential,
+    //   });
 
-      if (error) {
-        setError(error.message);
-      } else {
-        router.push('/dashboard');
-        router.refresh();
-      }
-    };
+    //   if (error) {
+    //     setError(error.message);
+    //   } else {
+    //     router.push('/dashboard');
+    //     router.refresh();
+    //   }
+    // };
 
     const initializeGoogle = () => {
       if (window.google && window.google.accounts) {
@@ -100,10 +100,10 @@ export default function SignUpPage() {
 
   return (
     <>
-      <Script
+      {/* <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
-      />
+      /> */}
 
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -149,7 +149,7 @@ export default function SignUpPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white text-gray-900"
                   />
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function SignUpPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white text-gray-900"
                   />
                 </div>
               </div>
@@ -184,8 +184,8 @@ export default function SignUpPage() {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500 mb-2">Or continue with</p>
-              {mounted && <div id="google-signup-button" className="flex justify-center" />}
+              {/* <p className="text-sm text-gray-500 mb-2">Or continue with</p>
+              {mounted && <div id="google-signup-button" className="flex justify-center" />} */}
             </div>
           </div>
         </div>
