@@ -7,7 +7,8 @@ export async function GET(req) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-  const apiUrl = `https://llm-2g3j.onrender.com/results/?link=${encodeURIComponent(link)}`;
+  const baseUrl = process.env.ANALYZER_API_BASE_URL || 'https://llm-2g3j.onrender.com';
+  const apiUrl = `${baseUrl}/results/?link=${encodeURIComponent(link)}`;
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {
